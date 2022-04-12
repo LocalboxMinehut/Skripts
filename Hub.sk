@@ -1,0 +1,173 @@
+command /pl:
+	trigger:
+		if player has permission "op":
+			stop
+			send "&9&lLocalbox |&b&l Command is disabled"
+command /plugins:
+	trigger:
+		if player has permission "op":
+			stop
+			send "&9&lLocalbox |&b&l Command is disabled"
+command /plgin:
+	trigger:
+		if player has permission "op":
+			stop
+			send "&9&lLocalbox |&b&l Command is disabled"
+command /minecraft:plugins:
+	trigger:
+		if player has permission "op":
+			stop
+			send "&9&lLocalbox |&b&l Command is disabled"
+command /minecraft:pl:
+	trigger:
+		if player has permission "op":
+			stop
+			send "&9&lLocalbox |&b&l Command is disabled"
+variables:
+	{build::%player%} = false
+command /build:
+	permission: build
+	trigger:
+		if {build::%player%} = false:
+			set {build::%player%} to true
+			send "&9Localbox |&b&l You have enabled building for yourself"
+		else:
+			set {build::%player%} to false
+			send "&9Localbox |&b&l You have disabled building for yourself"
+options:
+	prefix: &8[&9LocalBox&8]
+	SoundD: BLOCK_NOTE_BLOCK_PLING
+	SoundD-Volume: 1
+	SoundD-Pitch: 2
+command /discord:
+	aliases: /community, /dc
+	trigger:
+		send "{@prefix} &7Join the &bDiscord <tooltip:&6Click to open the &bDiscord><link:https://discord.gg/jDsZP89Z3B>&ehere." to player
+on block place:
+	if player has permission "build":
+		if {build::%player%} = true:
+			stop
+		else:
+			send "&9&lLocalbox |&b&l Placing blocks is disabled (/build to enable building)"
+			cancel event
+	else:
+		cancel event
+		send "&9&lLocalbox |&b&l Placing blocks is disabled"
+on block break:
+	if player has permission "build":
+		if {build::%player%} = true:
+			stop
+		else:
+			send "&9&lLocalbox |&b&l Breaking blocks is disabled (/build to enable building)"
+			cancel event
+	else:
+		cancel event
+		send "&9&lLocalbox |&b&l Breaking blocks is disabled"		
+on join:
+	set {build::%player%} to false
+	set join message to " "
+	set slot 4 of player to clock of mending named "&aServer Selector"
+	play sound "ui.toast.challenge_complete" at volume 1 at pitch 2 to player
+	execute console command "spawn %player%"
+	if {playerjoined::%player%} is not set:
+		send title "&9&lWelcome Aboard!" with subtitle "&b&lRight click the clock to join a server" to player for 5 seconds
+		set {playerjoined::%player%} to true
+	else:
+		send title "&9&lWelcome Back!" with subtitle "&b&lRight click the clock to join a server" to player for 5 seconds
+on quit:
+	set quit message to " "
+on damage of player:
+	cancel event
+on drop:
+	cancel event
+	
+on right click with clock:
+	set metadata tag "Servers" of player to chest inventory with 3 rows named "&e&lClick to join a server!"
+	set slot 13 of metadata tag "Servers" of player to netherite sword of mending named "&9&lLocalbox" with lore "&b&lBOXPVP &9&l[]&b&l Grind to the top &9&l[]&b&l Make teams"
+	set slot 11 of metadata tag "Servers" of player to diamond sword of mending named "&9&lLocalPrac" with lore "&b&lPractice PVP &9&l[]&b&l Warmup &9&l[]&b&l Kills for Kill Tokens"
+	set slot 15 of metadata tag "Servers" of player to iron ingot of mending named "&9&lLocalEvent" with lore "&b&lDaily Events &9&l[]&b&l Win for rewards &9&l[]&b&l anncouned on discord"
+	open (metadata tag "Servers" of player) to player
+on step on slime block:
+	create a fake explosion at location of player
+	push player upward at speed 2
+	push player forward at speed 5
+on inventory click:
+	cancel event
+	if name of event-item is "&9&lLocalbox":
+		connect player to "LocalBoxx"
+	if name of event-item is "&9&lLocalPrac":
+		connect player to "LocalPrac"
+	if name of event-item is "&9&lLocalEvent":
+		connect player to "LocalEvent"
+every 1.45 seconds:
+	loop all players:
+		set slot 0 of loop-player to red stained glass pane named " "
+		set slot 1 of loop-player to red stained glass pane named " "
+		set slot 2 of loop-player to red stained glass pane named " "
+		set slot 6 of loop-player to green stained glass pane named " "
+		set slot 7 of loop-player to green stained glass pane named " "
+		set slot 8 of loop-player to green stained glass pane named " "
+		wait 3 ticks
+		set slot 0 of loop-player to pink stained glass pane named " "
+		set slot 1 of loop-player to red stained glass pane named " "
+		set slot 2 of loop-player to red stained glass pane named " "
+		set slot 6 of loop-player to red stained glass pane named " "
+		set slot 7 of loop-player to green stained glass pane named " "
+		set slot 8 of loop-player to green stained glass pane named " "
+		wait 3 ticks
+		set slot 0 of loop-player to pink stained glass pane named " "
+		set slot 1 of loop-player to pink stained glass pane named " "
+		set slot 2 of loop-player to red stained glass pane named " "
+		set slot 6 of loop-player to red stained glass pane named " "
+		set slot 7 of loop-player to red stained glass pane named " "
+		set slot 8 of loop-player to green stained glass pane named " "
+		wait 3 ticks
+		set slot 0 of loop-player to pink stained glass pane named " "
+		set slot 1 of loop-player to pink stained glass pane named " "
+		set slot 2 of loop-player to pink stained glass pane named " "
+		set slot 6 of loop-player to red stained glass pane named " "
+		set slot 7 of loop-player to red stained glass pane named " "
+		set slot 8 of loop-player to red stained glass pane named " "
+		wait 3 ticks
+		set slot 0 of loop-player to orange stained glass pane named " "
+		set slot 1 of loop-player to pink stained glass pane named " "
+		set slot 2 of loop-player to pink stained glass pane named " "
+		set slot 6 of loop-player to pink stained glass pane named " "
+		set slot 7 of loop-player to red stained glass pane named " "
+		set slot 8 of loop-player to red stained glass pane named " "
+		wait 3 ticks
+		set slot 0 of loop-player to orange stained glass pane named " "
+		set slot 1 of loop-player to orange stained glass pane named " "
+		set slot 2 of loop-player to pink stained glass pane named " "
+		set slot 6 of loop-player to pink stained glass pane named " "
+		set slot 7 of loop-player to pink stained glass pane named " "
+		set slot 8 of loop-player to red stained glass pane named " "
+		wait 3 ticks
+		set slot 0 of loop-player to green stained glass pane named " "
+		set slot 1 of loop-player to orange stained glass pane named " "
+		set slot 2 of loop-player to orange stained glass pane named " "
+		set slot 6 of loop-player to orange stained glass pane named " "
+		set slot 7 of loop-player to pink stained glass pane named " "
+		set slot 8 of loop-player to pink stained glass pane named " "
+		wait 3 ticks
+		set slot 0 of loop-player to green stained glass pane named " "
+		set slot 1 of loop-player to green stained glass pane named " "
+		set slot 2 of loop-player to orange stained glass pane named " "
+		set slot 6 of loop-player to orange stained glass pane named " "
+		set slot 7 of loop-player to pink stained glass pane named " "
+		set slot 8 of loop-player to pink stained glass pane named " "
+		wait 3 ticks
+		set slot 0 of loop-player to red stained glass pane named " "
+		set slot 1 of loop-player to green stained glass pane named " "
+		set slot 2 of loop-player to green stained glass pane named " "
+		set slot 6 of loop-player to green stained glass pane named " "
+		set slot 7 of loop-player to orange stained glass pane named " "
+		set slot 8 of loop-player to orange stained glass pane named " "
+		wait 3 ticks
+		set slot 0 of loop-player to red stained glass pane named " "
+		set slot 1 of loop-player to red stained glass pane named " "
+		set slot 2 of loop-player to green stained glass pane named " "
+		set slot 6 of loop-player to green stained glass pane named " "
+		set slot 7 of loop-player to green stained glass pane named " "
+		set slot 8 of loop-player to orange stained glass pane named " "
+		
