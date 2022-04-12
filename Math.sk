@@ -1,0 +1,32 @@
+command /math:
+	permission: op
+	trigger:
+		set {math1} to a random Integer between 100 and 2000
+		set {math2} to a random Integer between 100 and 2000
+		set {mathanswer} to {math1} + {math2}
+		broadcast " "
+		broadcast "&7&l-----&b&l[&9&lLocalbox&b&l]&7&l-----"
+		broadcast "&b&lFirst one to solve &9&l%{math1}% + %{math2}%"
+		broadcast "&7&l-----&b&l[&9&lLocalbox&b&l]&7&l----- "
+		broadcast "    "
+every 10 minute:
+  chance of 50%:
+    set {math1} to a random Integer between 100 and 2000
+    set {math2} to a random Integer between 100 and 2000
+    set {mathanswer} to {math1} + {math2}
+    set {math} to true
+    broadcast " "
+    broadcast "&7&l-----&b&l[&9&lLocalbox&b&l]&7&l-----"
+    broadcast "&b&lFirst one to solve &9&l%{math1}% + %{math2}%"
+    broadcast "&7&l-----&b&l[&9&lLocalbox&b&l]&7&l----- "
+    broadcast "    "
+
+on chat:
+  if {math1} is set:
+    if message contains "%{mathanswer}%":
+      broadcast "&9&l%player%&b&l got it right with the answer was &9&l%{mathanswer}%"
+      clear {math1}
+      clear {math2}
+      clear {mathanswer}	
+      clear {math}
+      execute console command "goldencrates givekey %player% afk 10"
