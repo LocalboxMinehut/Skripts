@@ -1,0 +1,101 @@
+#HUB
+command /localevent:
+  permission: op
+  trigger:
+    broadcast "&9&lLocalEvent |&b&l Starting Event in 2 minutes"
+    execute console command "holo setline localevent 1 &a&lSTARTING..."
+    wait 2 minutes
+    execute console command "holo setline localevent 1 &a&lSTARTED"
+    wait 10 minutes
+    execute console command "holo setline localevent 1 &c&lWHITELISTED"
+#Event
+command /event [<text>] [<number>] [<text>]:
+  permission: op
+  trigger:
+    if arg-1 is set:
+      if arg-1 is "help":
+        send "&b&l/event start(Gives everyone a kit then 15 seconds later starts the event)"
+        send "&9&l/event end(Kicks everyone and whitelists the server)"
+        send "&b&l/event unwhitelist(unwhitelist the server and does all setspawn, worldboarder and regions for you)"
+        send "&9&l/event worldboarder (sets the worldboarder)"
+      if arg-1 is "start":
+        broadcast "&9&lLocalEvent |&b&l Everyone got a kit, event starting in 15 seconds"
+        loop all players:
+          execute console command "clear %loop-player%"
+          execute console command "kit crystal %loop-player%"
+        wait 5 seconds
+        broadcast "&9&lLocalEvent |&b&l Event starting in 10 seconds"
+        wait 5 seconds
+        broadcast "&9&lLocalEvent |&b&l Event starting in 5 seconds"
+        wait 2 seconds
+        broadcast "&9&lLocalEvent |&b&l Event starting in 3"
+        wait 1 seconds
+        broadcast "&9&lLocalEvent |&b&l Event starting in 2"
+        wait 1 seconds
+        broadcast "&9&lLocalEvent |&b&l Event starting in 1"
+        wait 1 second
+        execute console command "rg flag __global__ block-break allow"
+        execute console command "rg flag __global__ block-place allow"
+        execute console command "rg flag __global__ pvp allow"
+        execute console command "finalshowdown"
+      if arg-1 is "unwhitelist":
+        execute player command "setspawn"
+        execute player command "setworldspawn"
+        wait 1 tick
+        execute player command "worldborder center ~ ~"
+        wait 1 tick
+        execute player command "worldborder set 75 1"
+        execute player command "whitelist off"
+        wait 1 tick
+        execute console command "rg flag __global__ block-break deny"
+        execute console command "rg flag __global__ block-place deny"
+        execute console command "rg flag __global__ pvp deny"
+        wait 1 tick
+        send "&9&lLocalEvent |&b&l All good to let players join now"
+      if arg-1 is "end":
+        broadcast "&9&lLocalEvent | &b&lEvent ending"
+        wait 5 ticks
+        execute player command "kickall"
+        execute console command "worldborder set 1000 1"
+        execute console command "finalshowdown"
+      if arg-1 is "worldborder":
+        if arg-2 is set:
+          if arg-2 is set:
+            if arg-3 is set:
+              execute console command "worldborder set %arg-2% %arg-3%"
+              broadcast "&9&lLocalBox |&b&l worldborder skrinking to %arg-2% blocks over a time of %arg-3%"
+            else:
+              execute console command "worldborder set %arg-2%"
+              broadcast "&9&lLocalBox |&b&l worldborder was set to %arg-2% blocks"
+        else:
+          send "&9&l/event worldboarder <number> <time in seconds(OPTINAL)>"
+    else:
+      send "&b&lLocalEvent | Invaild Args (/event help)"
+#EVENT START
+variables:
+	{finalshowdown} = false
+command /finalshowdown:
+	Permission: op
+	Trigger:
+		if {finalshowdown} = false:
+			set {finalshowdown} to true
+			execute console command "smite *"
+			execute console command "whitelist on"
+			loop all players:
+				Apply blindness 3 to loop-player for 4 seconds
+				send title "&4&lThe final showdown has begun!" with subtitle "&c&lIf you die you wont respawn" to loop-player for 4 seconds
+			Stop
+		If {finalshowdown} = true:
+			Set {finalshowdown} to false
+			broadcast "&a&lThe Final Showdown has ENDED"
+			Stop
+
+On death of player:
+	If {finalshowdown} = true:
+		execute console command "smite %victim%"
+		execute console command "minecraft:gamemode spectator %victim%"
+		broadcast "&4&l%attacker%&r&c Killed &r&4&l%victim%"
+		send title "&c&lYou died" to victim for 3 seconds
+		force event-player to respawn
+		wait 1 tick
+		execute console command "minecraft:tp %victim% %attacker%"
